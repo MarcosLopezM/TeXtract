@@ -1,0 +1,5 @@
+colorama==0.4.6
+PyMuPDF==1.26.0
+pytest==8.4.0
+shellingham==1.5.4
+typer==0.16.0
