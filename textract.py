@@ -2,7 +2,7 @@ import pymupdf
 from pathlib import Path
 from utils import save_to_json, ensures_output_folder_exists
 from itertools import groupby
-from gen_dirs import gen_dir
+from gen_dirs import gen_dir, clean_filename
 
 
 def validate_filetype(doc):
@@ -82,7 +82,8 @@ def get_problems(doc, resultados, output_folder):
             if title == "Problems":
                 start = page_start
                 end = page_end
-                subfolder = Path(output_folder) / f"figs/{chapter}/{section_title}"
+                ch_name = clean_filename(chapter)
+                subfolder = Path(output_folder) / f"figs/{ch_name}/{section_title}"
                 ensures_output_folder_exists(subfolder)
 
                 for page_number in range(start, end):
