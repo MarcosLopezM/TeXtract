@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 
 def open_json(filename):
@@ -9,3 +10,8 @@ def open_json(filename):
 def save_to_json(data, filename):
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def ensures_output_folder_exists(path):
+    dir = Path(path)
+    dir.mkdir(exist_ok=True)

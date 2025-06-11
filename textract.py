@@ -1,6 +1,6 @@
 import pymupdf
-import os
-from utils import save_to_json
+from pathlib import Path
+from utils import save_to_json, ensures_output_folder_exists
 from itertools import groupby
 
 
@@ -14,10 +14,6 @@ def is_there_toc(doc):
     if len(toc) == 0:
         raise ValueError("El documento no contiene un TOC válido.")
     return toc
-
-
-def ensures_output_folder_exists(path):
-    os.makedirs(path, exist_ok=True)
 
 
 # Filtramos el TOC para obtener las secciones con problemas
@@ -97,8 +93,8 @@ def get_problems(doc, resultados, output_folder):
                         str(section_title).replace(" ", "_").replace("/", "_")
                     )
                     image_filename = f"{safe_section_name}_page_{page_number + 1}.png"
-                    image_path = os.path.join(output_folder, image_filename)
-                    section["image_path"] = image_path
+                    image_path = Path(output_folder) / image_filename
+                    section["image_path"] = str(image_path)
 
                     # Guardar imagen
                     pix.save(image_path)
