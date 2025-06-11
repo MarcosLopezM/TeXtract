@@ -2,6 +2,7 @@ import pymupdf
 from pathlib import Path
 from utils import save_to_json, ensures_output_folder_exists
 from itertools import groupby
+from gen_dirs import gen_dir
 
 
 def validate_filetype(doc):
@@ -81,6 +82,8 @@ def get_problems(doc, resultados, output_folder):
             if title == "Problems":
                 start = page_start
                 end = page_end
+                subfolder = Path(output_folder) / f"figs/{chapter}/{section_title}"
+                ensures_output_folder_exists(subfolder)
 
                 for page_number in range(start, end):
                     page = doc.load_page(page_number)
@@ -93,20 +96,23 @@ def get_problems(doc, resultados, output_folder):
                         str(section_title).replace(" ", "_").replace("/", "_")
                     )
                     image_filename = f"{safe_section_name}_page_{page_number + 1}.png"
-                    image_path = Path(output_folder) / image_filename
+                    image_path = subfolder / image_filename
                     section["image_path"] = str(image_path)
 
                     # Guardar imagen
                     pix.save(image_path)
 
 
-## Ejemplo de uso para validar el PDF y verificar el TOC
+"""
+  Ejemplo de uso para extraer problemas de un PDF
+"""
 doc = pymupdf.open(
     "./Matthew D. Schwartz - Quantum Field Theory And The Standard Model-Cambridge University Press (2014).pdf"
 )
 validate_filetype(doc)  # Validar el tipo de archivo PDF
 toc = is_there_toc(doc)  # Extraer el TOC con detalles
 resultados = where_to_look_for_problems(toc)
-output_folder = "./figs/"
-get_problems(doc, resultados, output_folder)
-save_to_json(resultados, "problemas_Schwartz.json")
+
+output_folder = "Schwartz_problems"
+base_dir = gen_dir(resultados, output_folder)
+get_problems(doc, resultados, base_dir)
