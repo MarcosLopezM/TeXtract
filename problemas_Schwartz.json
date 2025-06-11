@@ -1,0 +1,273 @@
+{
+  "Part I Field theory": [
+    {
+      "section": "2 Lorentz invariance and second quantization",
+      "title": "Problems",
+      "page_start": 46,
+      "page_end": 47,
+      "image_path": "./figs/2_Lorentz_invariance_and_second_quantization_page_48.png"
+    },
+    {
+      "section": "3 Classical field theory",
+      "title": "Problems",
+      "page_start": 61,
+      "page_end": 64,
+      "image_path": "./figs/3_Classical_field_theory_page_65.png"
+    },
+    {
+      "section": "4 Old-fashioned perturbation theory",
+      "title": "Problems",
+      "page_start": 74,
+      "page_end": 74,
+      "image_path": "./figs/4_Old-fashioned_perturbation_theory_page_75.png"
+    },
+    {
+      "section": "5 Cross sections and decay rates",
+      "title": "Problems",
+      "page_start": 86,
+      "page_end": 87,
+      "image_path": "./figs/5_Cross_sections_and_decay_rates_page_88.png"
+    },
+    {
+      "section": "6 The S-matrix and time-ordered products",
+      "title": "Problems",
+      "page_start": 96,
+      "page_end": 96,
+      "image_path": "./figs/6_The_S-matrix_and_time-ordered_products_page_97.png"
+    },
+    {
+      "section": "7 Feynman rules",
+      "title": "Problems",
+      "page_start": 122,
+      "page_end": 125,
+      "image_path": "./figs/7_Feynman_rules_page_126.png"
+    }
+  ],
+  "Part II Quantum electrodynamics": [
+    {
+      "section": "8 Spin 1 and gauge invariance",
+      "title": "Problems",
+      "page_start": 157,
+      "page_end": 158,
+      "image_path": "./figs/8_Spin_1_and_gauge_invariance_page_159.png"
+    },
+    {
+      "section": "9 Scalar quantum electrodynamics",
+      "title": "Problems",
+      "page_start": 174,
+      "page_end": 175,
+      "image_path": "./figs/9_Scalar_quantum_electrodynamics_page_176.png"
+    },
+    {
+      "section": "10 Spinors",
+      "title": "Problems",
+      "page_start": 200,
+      "page_end": 202,
+      "image_path": "./figs/10_Spinors_page_203.png"
+    },
+    {
+      "section": "11 Spinor solutions and CPT",
+      "title": "Problems",
+      "page_start": 220,
+      "page_end": 223,
+      "image_path": "./figs/11_Spinor_solutions_and_CPT_page_224.png"
+    },
+    {
+      "section": "12 Spin and statistics",
+      "title": "Problems",
+      "page_start": 242,
+      "page_end": 242,
+      "image_path": "./figs/12_Spin_and_statistics_page_243.png"
+    },
+    {
+      "section": "13 Quantum electrodynamics",
+      "title": "Problems",
+      "page_start": 267,
+      "page_end": 269,
+      "image_path": "./figs/13_Quantum_electrodynamics_page_270.png"
+    },
+    {
+      "section": "14 Path integrals",
+      "title": "Problems",
+      "page_start": 302,
+      "page_end": 303,
+      "image_path": "./figs/14_Path_integrals_page_304.png"
+    }
+  ],
+  "Part III Renormalization": [
+    {
+      "section": "15 The Casimir effect",
+      "title": "Problems",
+      "page_start": 318,
+      "page_end": 318,
+      "image_path": "./figs/15_The_Casimir_effect_page_319.png"
+    },
+    {
+      "section": "16 Vacuum polarization",
+      "title": "Problems",
+      "page_start": 333,
+      "page_end": 333,
+      "image_path": "./figs/16_Vacuum_polarization_page_334.png"
+    },
+    {
+      "section": "17 The anomalous magnetic moment",
+      "title": "Problems",
+      "page_start": 340,
+      "page_end": 340,
+      "image_path": "./figs/17_The_anomalous_magnetic_moment_page_341.png"
+    },
+    {
+      "section": "18 Mass renormalization",
+      "title": "Problems",
+      "page_start": 357,
+      "page_end": 357,
+      "image_path": "./figs/18_Mass_renormalization_page_358.png"
+    },
+    {
+      "section": "19 Renormalized perturbation theory",
+      "title": "Problems",
+      "page_start": 373,
+      "page_end": 373,
+      "image_path": "./figs/19_Renormalized_perturbation_theory_page_374.png"
+    },
+    {
+      "section": "20 Infrared divergences",
+      "title": "Problems",
+      "page_start": 399,
+      "page_end": 399,
+      "image_path": "./figs/20_Infrared_divergences_page_400.png"
+    },
+    {
+      "section": "21 Renormalizability",
+      "title": "Problems",
+      "page_start": 412,
+      "page_end": 412,
+      "image_path": "./figs/21_Renormalizability_page_413.png"
+    },
+    {
+      "section": "22 Non-renormalizable theories",
+      "title": "Problems",
+      "page_start": 435,
+      "page_end": 435,
+      "image_path": "./figs/22_Non-renormalizable_theories_page_436.png"
+    },
+    {
+      "section": "23 The renormalization group",
+      "title": "Problems",
+      "page_start": 469,
+      "page_end": 470,
+      "image_path": "./figs/23_The_renormalization_group_page_471.png"
+    },
+    {
+      "section": "24 Implications of unitarity",
+      "title": "Problems",
+      "page_start": 496,
+      "page_end": 497,
+      "image_path": "./figs/24_Implications_of_unitarity_page_498.png"
+    }
+  ],
+  "Part IV The Standard Model": [
+    {
+      "section": "25 Yang–Mills theory",
+      "title": "Problems",
+      "page_start": 525,
+      "page_end": 526,
+      "image_path": "./figs/25_Yang–Mills_theory_page_527.png"
+    },
+    {
+      "section": "26 Quantum Yang–Mills theory",
+      "title": "Problems",
+      "page_start": 552,
+      "page_end": 552,
+      "image_path": "./figs/26_Quantum_Yang–Mills_theory_page_553.png"
+    },
+    {
+      "section": "27 Gluon scattering and the spinor-helicity formalism",
+      "title": "Problems",
+      "page_start": 578,
+      "page_end": 579,
+      "image_path": "./figs/27_Gluon_scattering_and_the_spinor-helicity_formalism_page_580.png"
+    },
+    {
+      "section": "28 Spontaneous symmetry breaking",
+      "title": "Problems",
+      "page_start": 602,
+      "page_end": 602,
+      "image_path": "./figs/28_Spontaneous_symmetry_breaking_page_603.png"
+    },
+    {
+      "section": "29 Weak interactions",
+      "title": "Problems",
+      "page_start": 633,
+      "page_end": 634,
+      "image_path": "./figs/29_Weak_interactions_page_635.png"
+    },
+    {
+      "section": "30 Anomalies",
+      "title": "Problems",
+      "page_start": 659,
+      "page_end": 659,
+      "image_path": "./figs/30_Anomalies_page_660.png"
+    },
+    {
+      "section": "31 Precision tests of the Standard Model",
+      "title": "Problems",
+      "page_start": 685,
+      "page_end": 685,
+      "image_path": "./figs/31_Precision_tests_of_the_Standard_Model_page_686.png"
+    },
+    {
+      "section": "32 Quantum chromodynamics and the parton model",
+      "title": "Problems",
+      "page_start": 717,
+      "page_end": 719,
+      "image_path": "./figs/32_Quantum_chromodynamics_and_the_parton_model_page_720.png"
+    }
+  ],
+  "Part V Advanced topics": [
+    {
+      "section": "33 Effective actions and Schwinger proper time",
+      "title": "Problems",
+      "page_start": 751,
+      "page_end": 751,
+      "image_path": "./figs/33_Effective_actions_and_Schwinger_proper_time_page_752.png"
+    },
+    {
+      "section": "34 Background fields",
+      "title": "Problems",
+      "page_start": 777,
+      "page_end": 778,
+      "image_path": "./figs/34_Background_fields_page_779.png"
+    },
+    {
+      "section": "35 Heavy-quark physics",
+      "title": "Problems",
+      "page_start": 794,
+      "page_end": 794,
+      "image_path": "./figs/35_Heavy-quark_physics_page_795.png"
+    },
+    {
+      "section": "36 Jets and effective field theory",
+      "title": "Problems",
+      "page_start": 829,
+      "page_end": 831,
+      "image_path": "./figs/36_Jets_and_effective_field_theory_page_832.png"
+    }
+  ],
+  "Appendices": [
+    {
+      "section": "Appendix A Conventions",
+      "title": "Problems",
+      "page_start": 840,
+      "page_end": 840,
+      "image_path": "./figs/Appendix_A_Conventions_page_841.png"
+    },
+    {
+      "section": "Appendix B Regularization",
+      "title": "Problems",
+      "page_start": 852,
+      "page_end": 852,
+      "image_path": "./figs/Appendix_B_Regularization_page_853.png"
+    }
+  ]
+}
