@@ -1,9 +1,7 @@
 # import os
 import re
-from utils import save_to_json, open_json
-
-# from pathlib import Path
-from prettyprinter import cpprint
+from utils import ensures_output_folder_exists, save_to_json, open_json
+from pathlib import Path
 
 
 def clean_filename(name):
@@ -31,7 +29,15 @@ def clean_data(data):
     return cleaned_data
 
 
-data = open_json("./problemas_Schwartz.json")
-data = clean_data(data)
-cpprint(data)
-save_to_json(data, "problems.json")
+def gen_dir(data, out_dir):
+    data = clean_data(data)  # Clean the data -> Create directories with new names
+    base_dir = Path(out_dir)
+
+    for chapter, sections in data.items():
+        for section in sections:
+            dir_path = base_dir / f"{chapter}/{section['section']}"
+            print(f"Creating directory at: {dir_path}")
+            # Ensure the directory exists
+            ensures_output_folder_exists(dir_path)
+
+    return base_dir
