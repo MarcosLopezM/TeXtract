@@ -14,4 +14,4 @@ def save_to_json(data, filename):
 
 def ensures_output_folder_exists(path):
     dir = Path(path)
-    dir.mkdir(exist_ok=True)
+    dir.mkdir(parents=True, exist_ok=True)
