@@ -1,9 +1,7 @@
 import pymupdf
 import os
-import re
-import json
+from utils import save_to_json
 from itertools import groupby
-from prettyprinter import cpprint
 
 
 def validate_filetype(doc):
@@ -91,7 +89,6 @@ def get_problems(doc, resultados, output_folder):
                 for page_number in range(start, end):
                     page = doc.load_page(page_number)
 
-                    # matrix = pymupdf.Matrix(2, 2)
                     pix = page.get_pixmap()
 
                     # Nombre de archivo
@@ -107,12 +104,6 @@ def get_problems(doc, resultados, output_folder):
                     pix.save(image_path)
 
 
-# Exportar los resultados a un archivo JSON
-def save_to_json(resultados, filename="resultados.json"):
-    with open(filename, "w", encoding="utf-8") as f:
-        json.dump(resultados, f, ensure_ascii=False, indent=2)
-
-
 ## Ejemplo de uso para validar el PDF y verificar el TOC
 doc = pymupdf.open(
     "./Matthew D. Schwartz - Quantum Field Theory And The Standard Model-Cambridge University Press (2014).pdf"
@@ -123,4 +114,3 @@ resultados = where_to_look_for_problems(toc)
 output_folder = "./figs/"
 get_problems(doc, resultados, output_folder)
 save_to_json(resultados, "problemas_Schwartz.json")
-# cpprint(resultados)
