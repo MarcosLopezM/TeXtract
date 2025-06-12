@@ -1,0 +1,8 @@
+[package]
+name = "gen_latex_docs"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rusttex = "0.1.2"
+walkdir = "2.5.0"
