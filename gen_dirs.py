@@ -1,16 +1,34 @@
-# import os
 import re
 from utils import ensures_output_folder_exists
 from pathlib import Path
+
+FILENAME_PATTERN = re.compile(r"[^a-zA-Z0-9\s\-_]")
+SEC_NAME_PATTERN = re.compile(r"'(\d+)_?(.*)")
 
 
 def clean_filename(name):
     """
     Converts the tile of the chapters, sections, and problems into a safe filename.
     """
-    name = re.sub(r"[^a-zA-Z0-9\s\-_]", "", name)
-    name = name.replace(" ", "_")
-    return name.strip("_")
+    return FILENAME_PATTERN.sub("", name).replace(" ", "_").strip("_")
+
+
+def clean_ch_name(name, idx):
+    if re.match(r"^\d", name):
+        return clean_filename(name)
+    else:
+        return f"{idx:02d}_{clean_filename(name)}"
+
+
+def clean_sec_name(name):
+    cln_name = clean_filename(name)
+    match_patttern = SEC_NAME_PATTERN.match(cln_name)
+
+    if not match_patttern:
+        return cln_name
+
+    idx, rest = match_patttern.groups()
+    return f"{int(idx):02d}_{rest}" if rest else f"{int(idx):02d}"
 
 
 def clean_data(data):
@@ -18,26 +36,16 @@ def clean_data(data):
     idx = 1
 
     for chapter, sections in data.items():
-        clean_ch_name = (
-            clean_filename(chapter)
-            if re.match(r"^\d", chapter)
-            else f"{idx:02d}_{clean_filename(chapter)}"
-        )
+        ch_name = clean_ch_name(chapter, idx)
         cleaned_sections = []
-        for section in sections:
-            clean_sec_name = clean_filename(section["section"])
-            clean_sec_name = re.sub(
-                r"^(\d+)_?(.*)",
-                lambda m: f"{int(m.group(1)):02d}_{m.group(2)}"
-                if m.group(2)
-                else f"{int(m.group(1)):02d}",
-                clean_sec_name,
-            )
 
-            section["section"] = clean_sec_name
+        for section in sections:
+            sec_name = clean_sec_name(section["section"])
+
+            section["section"] = sec_name
             cleaned_sections.append(section)
 
-        cleaned_data[clean_ch_name] = cleaned_sections
+        cleaned_data[ch_name] = cleaned_sections
         idx += 1
 
     return cleaned_data
