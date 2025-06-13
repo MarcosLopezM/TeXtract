@@ -1,6 +1,6 @@
 # import os
 import re
-from utils import ensures_output_folder_exists, save_to_json, open_json
+from utils import ensures_output_folder_exists
 from pathlib import Path
 
 
@@ -26,6 +26,14 @@ def clean_data(data):
         cleaned_sections = []
         for section in sections:
             clean_sec_name = clean_filename(section["section"])
+            clean_sec_name = re.sub(
+                r"^(\d+)_?(.*)",
+                lambda m: f"{int(m.group(1)):02d}_{m.group(2)}"
+                if m.group(2)
+                else f"{int(m.group(1)):02d}",
+                clean_sec_name,
+            )
+
             section["section"] = clean_sec_name
             cleaned_sections.append(section)
 
