@@ -15,9 +15,14 @@ def clean_filename(name):
 
 def clean_data(data):
     cleaned_data = {}
+    idx = 1
 
     for chapter, sections in data.items():
-        clean_ch_name = clean_filename(chapter)
+        clean_ch_name = (
+            clean_filename(chapter)
+            if re.match(r"^\d", chapter)
+            else f"{idx:02d}_{clean_filename(chapter)}"
+        )
         cleaned_sections = []
         for section in sections:
             clean_sec_name = clean_filename(section["section"])
@@ -25,6 +30,7 @@ def clean_data(data):
             cleaned_sections.append(section)
 
         cleaned_data[clean_ch_name] = cleaned_sections
+        idx += 1
 
     return cleaned_data
 
