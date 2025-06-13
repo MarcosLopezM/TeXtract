@@ -75,7 +75,7 @@ pub fn create_main_tex(base_dir: &Path, title_book: &str, author_sol: &str) -> s
     builder.add_literal("%! TeX program = lualatex\n");
     builder.set_document_class(DocumentClass::Book, options![]);
     builder.use_package("subfiles", options![]);
-    builder.add_literal("\\input{preamble.tex}\n");
+    builder.input("preamble.tex");
     builder.add_literal("\\graphicspath{{figs/}}\n");
     builder.title(title_book);
     builder.author(author_sol);
