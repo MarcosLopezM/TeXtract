@@ -58,7 +58,6 @@ def gen_dir(data, out_dir):
     for chapter, sections in data.items():
         for section in sections:
             dir_path = base_dir / f"{chapter}/{section['section']}"
-            print(f"Creating directory at: {dir_path}")
             # Ensure the directory exists
             ensures_output_folder_exists(dir_path)
 
