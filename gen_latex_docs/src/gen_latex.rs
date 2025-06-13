@@ -1,3 +1,4 @@
+use once_cell::sync::Lazy;
 use regex::Regex;
 use rusttex::{ContentBuilder, DocumentClass, options};
 // use std::fs::File;
@@ -6,92 +7,20 @@ use std::fs::{self, File, rename};
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
+static NAME_PREFIX: Lazy<Regex> = Lazy::new(|| Regex::new(r"^\d+_").unwrap());
+
 pub fn write_file<P: AsRef<Path>>(path: P, content: &str) -> std::io::Result<()> {
     let mut file = File::create(path)?;
     file.write_all(content.as_bytes())
 }
 
-pub fn create_preamble(base_dir: &Path) -> std::io::Result<()> {
-    let content = r#"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                           %
-%           Common Preamble: Math & Science Documents       %
-%                                                           %
-%  Purpose: Reusable set of packages for papers involving   %
-%           mathematics, physics, or technical content.     %
-%                                                           %
-%  Usage: \input{preamble.tex}  (from main .tex file)       %
-%                                                           %
-%  Author: Marcos López Merino                              %
-%  Date:    2025-06-11                                      %
-%                                                           %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% ============= Encoding and Language ============ %
-\usepackage[utf8]{inputenc} % UTF-8 encoding
-\usepackage[T1]{fontenc} % Output font encoding
-\usepackage[english]{babel} % Language support
-
-% ============= Math Packages ============== %
-\usepackage{amsmath, amssymb, amsfonts}
-\usepackage{mathtools} % For advanced math typesetting
-\usepackage{bm} % For bold math symbols
-\usepackage{derivative} % For derivatives
-\usepackage{lualatex-math} % For LuaLaTeX math support
-\usepackage{empheq} % For enhanced equation environments
-\usepackage{nicematrix} % For nice matrices
-\usepackage{simples-matrices} % Fast matrix typesetting
-
-% ============= Physics Packages ============ %
-% \usepackage{phfqit} % BraKet notation for QM and Quantum Information Theory
-% \usepackage{siunitx} % For SI units and scientific notation
-
-% ============= Graphics and Figures ============ %
-\usepackage{graphicx} % For including images
-\usepackage{subcaption} % For subfigures
-
-% ============= Fonts and Typography ============ %
-\usepackage{microtype} % Better typography
-\usepackage{csquotes} % Context-sensitive quotes
-\usepackage{fontspec} % Font selection for XeLaTeX and LuaLaTeX
-
-% ============= Miscellaneous ============ %
-\usepackage{enumitem} % Customizable lists
-\usepackage{xcolor} % Color support
-\usepackage{kantlipsum} % Dummy text for testing
-\usepackage{datetime2} % Date and time formatting
-\setlength{\jot}{10pt} % Space between lines in equations
-\allowdisplaybreaks % Allow page breaks in equations
-
-% ============= Hyperlinks and References ============ %
-\usepackage{hyperref} % Hyperlinks in the document
-\usepackage{zref-clever} % Clever references
-\usepackage{zref-user}
-
-\zcsetup{
-  lang = english ,
-  cap = false ,
-  capfirst = true ,
-  hyperref = auto ,
+fn create_preamble(base_dir: &Path) -> std::io::Result<()> {
+    const CONTENT: &str = include_str!("preamble.in");
+    write_file(base_dir.join("preamble.tex"), CONTENT)
 }
 
-\hypersetup{
-	colorlinks=true,%
-	linkcolor={[rgb]{0,0.2,0.6}},%
-	citecolor={[rgb]{0,0.6,0.2}},%
-	filecolor={[rgb]{0.8,0,0.8}},%
-	urlcolor={[rgb]{0.8,0,0.8}},%
-	runcolor={[rgb]{0.8,0,0.8}},% 
-	menucolor={[rgb]{0,0.2,0.6}},%
-	linkbordercolor={[rgb]{0,0.2,0.6}},%
-	citebordercolor={[rgb]{0,0.6,0.2}},%
-	filebordercolor={[rgb]{0.8,0,0.8}},%
-	urlbordercolor={[rgb]{0.8,0,0.8}},%
-	runbordercolor={[rgb]{0.8,0,0.8}},%
-	menubordercolor={[rgb]{0,0.2,0.6}},% 
-	unicode=true,%
-}
-"#;
-    write_file(base_dir.join("preamble.tex"), content)
+fn clean_name(name: &str) -> String {
+    NAME_PREFIX.replace(name, "").replace("_", " ")
 }
 
 pub fn create_main_tex(base_dir: &Path, title_book: &str, author_sol: &str) -> std::io::Result<()> {
@@ -110,8 +39,6 @@ pub fn create_main_tex(base_dir: &Path, title_book: &str, author_sol: &str) -> s
     builder.maketitle();
     builder.add_literal("\\tableofcontents\n");
 
-    let re = Regex::new(r"^\d+_").unwrap();
-
     let mut chapters: Vec<_> = fs::read_dir(base_dir)?
         .filter_map(|e| e.ok())
         .filter(|e| e.path().is_dir())
@@ -120,17 +47,14 @@ pub fn create_main_tex(base_dir: &Path, title_book: &str, author_sol: &str) -> s
     chapters.sort_by_key(|e| e.file_name());
 
     for chapter in &chapters {
-        // let chapter_name = chapter.file_name().to_string_lossy().replace('_', " ");
-        // let chapter_path = chapter.path();
         let chapter_name = chapter.file_name().to_string_lossy().to_string();
-        let chapter_path = chapter.path();
 
-        if re.is_match(&chapter_name) {
-            let cln_chapter_name = re.replace(&chapter_name, "").to_string();
+        if NAME_PREFIX.is_match(&chapter_name) {
+            let cln_chapter_name = clean_name(&chapter_name);
             let cln_chapter_path = base_dir.join(&cln_chapter_name);
 
-            if chapter_path != cln_chapter_path {
-                rename(&chapter_path, &cln_chapter_path)?;
+            if chapter.path() != cln_chapter_path {
+                rename(chapter.path(), &cln_chapter_path)?;
             }
 
             builder.add_literal(&format!(
@@ -148,7 +72,7 @@ pub fn create_main_tex(base_dir: &Path, title_book: &str, author_sol: &str) -> s
 
             for section in &sections {
                 let sec_name = section.file_name().unwrap().to_string_lossy();
-                let cln_sec_name = re.replace(&sec_name, "").to_string();
+                let cln_sec_name = NAME_PREFIX.replace(&sec_name, "").to_string();
                 let sec_title = cln_sec_name.replace("_", " ");
 
                 create_subfile_tex(section, &sec_title)?;
