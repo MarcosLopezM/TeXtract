@@ -64,7 +64,33 @@ pub fn create_preamble(base_dir: &Path) -> std::io::Result<()> {
 
 % ============= Hyperlinks and References ============ %
 \usepackage{hyperref} % Hyperlinks in the document
-\usepackage{zref-clever} % Clever references"#;
+\usepackage{zref-clever} % Clever references
+\usepackage{zref-user}
+
+\zcsetup{
+  lang = english ,
+  cap = false ,
+  capfirst = true ,
+  hyperref = auto ,
+}
+
+\hypersetup{
+	colorlinks=true,%
+	linkcolor={[rgb]{0,0.2,0.6}},%
+	citecolor={[rgb]{0,0.6,0.2}},%
+	filecolor={[rgb]{0.8,0,0.8}},%
+	urlcolor={[rgb]{0.8,0,0.8}},%
+	runcolor={[rgb]{0.8,0,0.8}},% 
+	menucolor={[rgb]{0,0.2,0.6}},%
+	linkbordercolor={[rgb]{0,0.2,0.6}},%
+	citebordercolor={[rgb]{0,0.6,0.2}},%
+	filebordercolor={[rgb]{0.8,0,0.8}},%
+	urlbordercolor={[rgb]{0.8,0,0.8}},%
+	runbordercolor={[rgb]{0.8,0,0.8}},%
+	menubordercolor={[rgb]{0,0.2,0.6}},% 
+	unicode=true,%
+}
+"#;
     write_file(base_dir.join("preamble.tex"), content)
 }
 
