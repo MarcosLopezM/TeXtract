@@ -3,7 +3,7 @@ from utils import ensures_output_folder_exists
 from pathlib import Path
 
 FILENAME_PATTERN = re.compile(r"[^a-zA-Z0-9\s\-_]")
-SEC_NAME_PATTERN = re.compile(r"'(\d+)_?(.*)")
+SEC_NAME_PATTERN = re.compile(r"^(\d+)_?(.*)")
 
 
 def clean_filename(name):
@@ -27,8 +27,8 @@ def clean_sec_name(name):
     if not match_patttern:
         return cln_name
 
-    idx, rest = match_patttern.groups()
-    return f"{int(idx):02d}_{rest}" if rest else f"{int(idx):02d}"
+    num, rest = match_patttern.groups()
+    return f"{int(num):02d}_{rest}" if rest else f"{int(num):02d}"
 
 
 def clean_data(data):
