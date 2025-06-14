@@ -1,9 +1,7 @@
 use once_cell::sync::Lazy;
 use regex::Regex;
 use rusttex::{ContentBuilder, DocumentClass, options};
-// use std::fs::File;
 use std::fs::{self, File, rename};
-// use std::fs::{self, rename};
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
@@ -23,7 +21,25 @@ fn clean_name(name: &str) -> String {
     NAME_PREFIX.replace(name, "").replace("_", " ")
 }
 
-pub fn create_main_tex(base_dir: &Path, title_book: &str, author_sol: &str) -> std::io::Result<()> {
+fn create_subfile_tex(folder: &Path, sec_title: &str) -> std::io::Result<()> {
+    let mut builder = ContentBuilder::new();
+
+    builder.set_document_class(
+        DocumentClass::Custom("subfiles".to_string()),
+        options!["../main"],
+    );
+    builder.add_literal("\\graphicspath{{figs/}}\n");
+    builder.begin_document();
+    builder.section(sec_title);
+    builder.add_literal("\\kant[1-2]");
+    builder.end_document();
+    let latex = builder.build_document();
+
+    let subfile_path = folder.join("problems.tex");
+    write_file(&subfile_path, latex)
+}
+
+fn create_main_tex(base_dir: &Path, title_book: &str, author_sol: &str) -> std::io::Result<()> {
     create_preamble(base_dir)?;
 
     let mut builder = ContentBuilder::new();
@@ -71,14 +87,32 @@ pub fn create_main_tex(base_dir: &Path, title_book: &str, author_sol: &str) -> s
             sections.sort();
 
             for section in &sections {
-                let sec_name = section.file_name().unwrap().to_string_lossy();
+                let sec_name = match section.file_name() {
+                    Some(name) => name.to_string_lossy(),
+                    None => {
+                        eprintln!("There's no section name {:?}", section);
+                        continue;
+                    }
+                };
                 let cln_sec_name = NAME_PREFIX.replace(&sec_name, "").to_string();
                 let sec_title = cln_sec_name.replace("_", " ");
 
                 create_subfile_tex(section, &sec_title)?;
 
                 println!("Creating problems.tex in {:?}", section);
-                let subfile_rel_path = section.strip_prefix(base_dir).unwrap().join("problems.tex");
+                let subfile_rel_path = match section.strip_prefix(base_dir) {
+                    Ok(path) => path.join("problems.tex"),
+                    Err(err) => {
+                        eprintln!(
+                            "Error stripping prefix '{} from {}: {}",
+                            base_dir.display(),
+                            section.display(),
+                            err
+                        );
+                        continue;
+                    }
+                };
+
                 let subfile_str = subfile_rel_path.to_string_lossy().replace("\\", "/");
                 builder.add_literal(&format!("\\subfile{{\"{}\"}}\n", subfile_str));
             }
@@ -90,19 +124,53 @@ pub fn create_main_tex(base_dir: &Path, title_book: &str, author_sol: &str) -> s
     write_file(base_dir.join("main.tex"), latex)
 }
 
-pub fn create_subfile_tex(folder: &Path, sec_title: &str) -> std::io::Result<()> {
-    let mut builder = ContentBuilder::new();
-    builder.set_document_class(
-        DocumentClass::Custom("subfiles".to_string()),
-        options!["../main"],
-    );
-    // builder.add_literal("\\input{preamble.tex}\n");
-    builder.add_literal("\\graphicspath{{figs/}}\n");
-    builder.begin_document();
-    builder.section(sec_title);
-    builder.add_literal("\\kant[1-2]");
-    builder.end_document();
-    let latex = builder.build_document();
-    let subfile_path = folder.join("problems.tex");
-    write_file(&subfile_path, latex)
+pub enum BookTitle<'a> {
+    Static(&'a str),
+    Dynamic(fn(&str) -> String),
+}
+
+pub struct ProjectParameters<'a> {
+    pub base_dir: &'a Path,
+    pub book_title: BookTitle<'a>,
+    pub author_solns: &'a str,
+}
+
+fn default_title(base_dir: &str) -> String {
+    base_dir.replace("_", " ").replace("-", " ")
+}
+
+impl<'a> Default for ProjectParameters<'a> {
+    fn default() -> Self {
+        Self {
+            base_dir: Path::new("."),
+            author_solns: "Chris P. Bacon",
+            book_title: BookTitle::Dynamic(default_title),
+        }
+    }
+}
+
+pub fn create_project(params: ProjectParameters) -> std::io::Result<()> {
+    let base_dir = params.base_dir;
+    let book_title = params.book_title;
+    let author_solns = params.author_solns;
+
+    for chapter in fs::read_dir(base_dir)? {
+        let chapter = chapter?;
+        let chapter_path = chapter.path();
+
+        if chapter_path.is_dir() {
+            let chapter_name = chapter.file_name().to_string_lossy().to_string();
+
+            if let Some(name) = chapter_name.strip_suffix("_problems") {
+                // let title = book_title(name);
+                let title = match book_title {
+                    BookTitle::Static(t) => t.to_string(),
+                    BookTitle::Dynamic(f) => f(name),
+                };
+
+                create_main_tex(&chapter_path, &title, author_solns)?;
+            }
+        }
+    }
+    Ok(())
 }

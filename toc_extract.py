@@ -70,4 +70,4 @@ def where_to_look_for_problems(
                     }
                 )
 
-    return groupby_chapter(resultados)
+    return doc, groupby_chapter(resultados)
