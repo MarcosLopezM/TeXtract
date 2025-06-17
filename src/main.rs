@@ -42,22 +42,6 @@ fn main() -> std::io::Result<()> {
 fn run_build(input_file: PathBuf) -> std::io::Result<()> {
     println!("📄 {} {}", "Input file:".bold(), input_file.display());
 
-    // let confirm = Confirm::with_theme(&ColorfulTheme::default())
-    //     .with_prompt("❓ Create with default options?")
-    //     .default(true)
-    //     .interact()
-    //     .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
-    //
-    // if !confirm {
-    //     println!("{}", "Aborted.".red());
-    //     return Ok(());
-    // }
-    //
-    // // let output_folder = default_output_name(&input_file);
-    // let output_folder = call_python_extract(input_file.to_str().unwrap())?;
-    //
-    // // Create project parameters based on user input/defaults
-    // let params = ProjectParameters::default();
     let confirm = Confirm::with_theme(&ColorfulTheme::default())
         .with_prompt("❓ Create with default options?")
         .default(true)
