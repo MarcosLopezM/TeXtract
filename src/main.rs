@@ -42,22 +42,77 @@ fn main() -> std::io::Result<()> {
 fn run_build(input_file: PathBuf) -> std::io::Result<()> {
     println!("📄 {} {}", "Input file:".bold(), input_file.display());
 
+    // let confirm = Confirm::with_theme(&ColorfulTheme::default())
+    //     .with_prompt("❓ Create with default options?")
+    //     .default(true)
+    //     .interact()
+    //     .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
+    //
+    // if !confirm {
+    //     println!("{}", "Aborted.".red());
+    //     return Ok(());
+    // }
+    //
+    // // let output_folder = default_output_name(&input_file);
+    // let output_folder = call_python_extract(input_file.to_str().unwrap())?;
+    //
+    // // Create project parameters based on user input/defaults
+    // let params = ProjectParameters::default();
     let confirm = Confirm::with_theme(&ColorfulTheme::default())
         .with_prompt("❓ Create with default options?")
         .default(true)
         .interact()
-        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
+        .map_err(std::io::Error::other)?;
 
-    if !confirm {
-        println!("{}", "Aborted.".red());
-        return Ok(());
-    }
-
-    // let output_folder = default_output_name(&input_file);
     let output_folder = call_python_extract(input_file.to_str().unwrap())?;
 
-    // Create project parameters based on user input/defaults
-    let params = ProjectParameters::default();
+    let params: ProjectParameters = if confirm {
+        ProjectParameters {
+            base_dir: Path::new(&output_folder),
+            ..ProjectParameters::default()
+        }
+    } else {
+        println!("{}", "🛠 Enter custom project parameters:".yellow());
+
+        let book_title_input: String = dialoguer::Input::new()
+            .with_prompt("📘 Book title")
+            .interact_text()
+            .map_err(std::io::Error::other)?;
+
+        let book_title = latex::BookTitle::Static(Box::leak(book_title_input.into_boxed_str()));
+
+        let author_solns: String = dialoguer::Input::new()
+            .with_prompt("👤 Author of solutions")
+            .default("Chris P. Bacon".into())
+            .interact_text()
+            .map_err(std::io::Error::other)?;
+
+        let ch1: String = dialoguer::Input::new()
+            .with_prompt("🔹 Name of first chapter group (e.g. Part)")
+            .default("Part".into())
+            .interact_text()
+            .map_err(std::io::Error::other)?;
+
+        let ch2: String = dialoguer::Input::new()
+            .with_prompt("🔸 Name of second chapter group (e.g. Appendices)")
+            .default("Appendices".into())
+            .interact_text()
+            .map_err(std::io::Error::other)?;
+
+        let problems_name: String = dialoguer::Input::new()
+            .with_prompt("📎 Section name for problems")
+            .default("Problems".into())
+            .interact_text()
+            .map_err(std::io::Error::other)?;
+
+        ProjectParameters {
+            base_dir: Path::new(&output_folder),
+            book_title,
+            author_solns: Box::leak(author_solns.into_boxed_str()),
+            chs_names: vec![ch1, ch2],
+            problems_name,
+        }
+    };
 
     println!(
         "{} Looking for {} in chapters with names {} and {}",

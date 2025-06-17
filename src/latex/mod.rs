@@ -173,24 +173,18 @@ impl<'a> Default for ProjectParameters<'a> {
 }
 
 pub fn create_project(params: ProjectParameters) -> std::io::Result<()> {
-    let base_dir = params.base_dir;
-    let book_title = params.book_title;
-    let author_solns = params.author_solns;
+    let chapter_path = params.base_dir;
+    let chapter_name = chapter_path
+        .file_name()
+        .unwrap_or_default()
+        .to_string_lossy()
+        .to_string();
 
-    for chapter in fs::read_dir(base_dir)? {
-        let chapter = chapter?;
-        let chapter_path = chapter.path();
+    let title = match params.book_title {
+        BookTitle::Static(t) => t.to_string(),
+        BookTitle::Dynamic { generator, source } => generator(&chapter_name),
+    };
 
-        if chapter_path.is_dir() {
-            let chapter_name = chapter.file_name().to_string_lossy().to_string();
-
-            let title = match book_title {
-                BookTitle::Static(t) => t.to_string(),
-                BookTitle::Dynamic { generator, source } => generator(&chapter_name),
-            };
-
-            create_main_tex(&chapter_path, &title, author_solns)?;
-        }
-    }
+    create_main_tex(chapter_path, &title, params.author_solns)?;
     Ok(())
 }

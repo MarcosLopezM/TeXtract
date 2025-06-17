@@ -14,7 +14,8 @@ pub fn call_python_extract(input_file: &str) -> io::Result<String> {
             "❌ Python script failed:\n{}",
             String::from_utf8_lossy(&output.stderr)
         );
-        return Err(io::Error::new(io::ErrorKind::Other, "Python script failed"));
+
+        return Err(io::Error::other("Python script failed"));
     }
 
     // Convert stdout to string and trim
