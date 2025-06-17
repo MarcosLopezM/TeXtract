@@ -124,6 +124,7 @@ fn create_main_tex(base_dir: &Path, title_book: &str, author_sol: &str) -> std::
     write_file(base_dir.join("main.tex"), latex)
 }
 
+#[allow(dead_code)]
 pub enum BookTitle<'a> {
     Static(&'a str),
     Dynamic(fn(&str) -> String),
@@ -161,15 +162,11 @@ pub fn create_project(params: ProjectParameters) -> std::io::Result<()> {
         if chapter_path.is_dir() {
             let chapter_name = chapter.file_name().to_string_lossy().to_string();
 
-            if let Some(name) = chapter_name.strip_suffix("_problems") {
-                // let title = book_title(name);
-                let title = match book_title {
-                    BookTitle::Static(t) => t.to_string(),
-                    BookTitle::Dynamic(f) => f(name),
-                };
-
-                create_main_tex(&chapter_path, &title, author_solns)?;
-            }
+            let title = match book_title {
+                BookTitle::Static(t) => t.to_string(),
+                BookTitle::Dynamic(f) => f(&chapter_name),
+            };
+            create_main_tex(&chapter_path, &title, author_solns)?;
         }
     }
     Ok(())
