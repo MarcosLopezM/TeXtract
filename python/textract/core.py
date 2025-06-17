@@ -18,6 +18,11 @@ def default_output_name(doc, fallback_stem):
     return f"{clean_filename(fallback_stem)}"
 
 
+def path_obj_to_str(obj):
+    if isinstance(obj, Path):
+        return str(obj)
+
+
 def extract_n_create(input_file, out_dir=None, chs_names=None, problems_name=None):
     input_file = Path(input_file)
     doc, resultados = where_to_look_for_problems(
@@ -35,14 +40,11 @@ def extract_n_create(input_file, out_dir=None, chs_names=None, problems_name=Non
     base_dir = gen_dir(resultados, out_dir)
     get_problems(doc, resultados, base_dir)
 
-    return base_dir
+    base_dir = path_obj_to_str(base_dir)
+
+    print(base_dir)
 
 
-"""
-  Ejemplo de uso para extraer problemas de un PDF
-"""
-
-# archivo = "./Matthew D. Schwartz - Quantum Field Theory And The Standard Model-Cambridge University Press (2014).pdf"
 if __name__ == "__main__":
     # extract_n_create(archivo)
     import argparse

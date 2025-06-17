@@ -54,7 +54,7 @@ fn run_build(input_file: PathBuf) -> std::io::Result<()> {
     }
 
     // let output_folder = default_output_name(&input_file);
-    let output_folder = input_file.to_str().unwrap();
+    let output_folder = call_python_extract(input_file.to_str().unwrap())?;
 
     // Create project parameters based on user input/defaults
     let params = ProjectParameters::default();
@@ -68,7 +68,6 @@ fn run_build(input_file: PathBuf) -> std::io::Result<()> {
     );
 
     let extract_spinner = spinner("Extracting problems from PDF...");
-    call_python_extract(input_file.to_str().unwrap())?;
     extract_spinner.finish_with_message("✅ Extraction complete!");
 
     println!(
@@ -109,13 +108,4 @@ fn spinner(msg: &str) -> ProgressBar {
     pb.set_message(msg.to_string());
     pb.enable_steady_tick(Duration::from_millis(100));
     pb
-}
-
-fn default_output_name(input_file: &PathBuf) -> String {
-    let stem = input_file
-        .file_stem()
-        .unwrap_or_default()
-        .to_string_lossy()
-        .to_string();
-    format!("{}-Bacon", stem.replace(' ', "-"))
 }
