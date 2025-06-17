@@ -1,6 +1,7 @@
 use once_cell::sync::Lazy;
 use regex::Regex;
 use rusttex::{ContentBuilder, DocumentClass, options};
+use std::fmt;
 use std::fs::{self, File, rename};
 use std::io::Write;
 use std::path::{Path, PathBuf};
@@ -99,7 +100,7 @@ fn create_main_tex(base_dir: &Path, title_book: &str, author_sol: &str) -> std::
 
                 create_subfile_tex(section, &sec_title)?;
 
-                println!("Creating problems.tex in {:?}", section);
+                // println!("Creating problems.tex in {:?}", section);
                 let subfile_rel_path = match section.strip_prefix(base_dir) {
                     Ok(path) => path.join("problems.tex"),
                     Err(err) => {
@@ -127,16 +128,32 @@ fn create_main_tex(base_dir: &Path, title_book: &str, author_sol: &str) -> std::
 #[allow(dead_code)]
 pub enum BookTitle<'a> {
     Static(&'a str),
-    Dynamic(fn(&str) -> String),
+    Dynamic {
+        generator: fn(&str) -> String,
+        source: &'a str, // The string to use as input
+    },
+}
+
+impl<'a> fmt::Display for BookTitle<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            BookTitle::Static(s) => write!(f, "{}", s),
+            BookTitle::Dynamic { generator, source } => {
+                write!(f, "{}", generator(source))
+            }
+        }
+    }
 }
 
 pub struct ProjectParameters<'a> {
     pub base_dir: &'a Path,
     pub book_title: BookTitle<'a>,
     pub author_solns: &'a str,
+    pub chs_names: Vec<String>,
+    pub problems_name: String,
 }
 
-fn default_title(base_dir: &str) -> String {
+pub fn default_title(base_dir: &str) -> String {
     base_dir.replace("_", " ").replace("-", " ")
 }
 
@@ -145,7 +162,12 @@ impl<'a> Default for ProjectParameters<'a> {
         Self {
             base_dir: Path::new("."),
             author_solns: "Chris P. Bacon",
-            book_title: BookTitle::Dynamic(default_title),
+            book_title: BookTitle::Dynamic {
+                generator: default_title,
+                source: "",
+            },
+            chs_names: vec!["Part".to_string(), "Appendices".to_string()],
+            problems_name: "Problems".to_string(),
         }
     }
 }
@@ -164,8 +186,9 @@ pub fn create_project(params: ProjectParameters) -> std::io::Result<()> {
 
             let title = match book_title {
                 BookTitle::Static(t) => t.to_string(),
-                BookTitle::Dynamic(f) => f(&chapter_name),
+                BookTitle::Dynamic { generator, source } => generator(&chapter_name),
             };
+
             create_main_tex(&chapter_path, &title, author_solns)?;
         }
     }

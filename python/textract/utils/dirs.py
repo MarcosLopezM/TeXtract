@@ -1,5 +1,5 @@
 import re
-from utils import ensures_output_folder_exists
+from .common import ensures_output_folder_exists
 from pathlib import Path
 
 FILENAME_PATTERN = re.compile(r"[^a-zA-Z0-9\s\-_]")

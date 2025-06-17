@@ -1,6 +1,6 @@
-from gen_dirs import gen_dir, clean_filename
-from toc_extract import where_to_look_for_problems
-from img_extract import get_problems
+from pdf.toc import where_to_look_for_problems
+from utils.dirs import gen_dir, clean_filename
+from pdf.images import get_problems
 from pathlib import Path
 
 
@@ -42,6 +42,16 @@ def extract_n_create(input_file, out_dir=None, chs_names=None, problems_name=Non
   Ejemplo de uso para extraer problemas de un PDF
 """
 
-archivo = "./Matthew D. Schwartz - Quantum Field Theory And The Standard Model-Cambridge University Press (2014).pdf"
+# archivo = "./Matthew D. Schwartz - Quantum Field Theory And The Standard Model-Cambridge University Press (2014).pdf"
 if __name__ == "__main__":
-    extract_n_create(archivo)
+    # extract_n_create(archivo)
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input_file", type=str)
+    parser.add_argument("--out_dir", type=str, default=None)
+    parser.add_argument("--chs_names", nargs="+", default=("Part", "Appendices"))
+    parser.add_argument("--problems_name", type=str, default="Problems")
+    args = parser.parse_args()
+
+    extract_n_create(args.input_file, args.out_dir, args.chs_names, args.problems_name)
