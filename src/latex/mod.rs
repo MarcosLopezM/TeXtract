@@ -2,7 +2,7 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 use rusttex::{ContentBuilder, DocumentClass, options};
 use std::fmt;
-use std::fs::{self, File, rename};
+use std::fs::{self, File};
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
@@ -68,18 +68,18 @@ fn create_main_tex(base_dir: &Path, title_book: &str, author_sol: &str) -> std::
 
         if NAME_PREFIX.is_match(&chapter_name) {
             let cln_chapter_name = clean_name(&chapter_name);
-            let cln_chapter_path = base_dir.join(&cln_chapter_name);
-
-            if chapter.path() != cln_chapter_path {
-                rename(chapter.path(), &cln_chapter_path)?;
-            }
+            // let cln_chapter_path = base_dir.join(&cln_chapter_name);
+            //
+            // if chapter.path() != cln_chapter_path {
+            //     rename(chapter.path(), &cln_chapter_path)?;
+            // }
 
             builder.add_literal(&format!(
                 "\\chapter{{{}}}\n",
                 cln_chapter_name.replace("_", " ")
             ));
 
-            let mut sections: Vec<PathBuf> = fs::read_dir(&cln_chapter_path)?
+            let mut sections: Vec<PathBuf> = fs::read_dir(chapter.path())?
                 .filter_map(|e| e.ok())
                 .filter(|e| e.path().is_dir())
                 .map(|e| e.path())
