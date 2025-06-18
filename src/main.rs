@@ -1,8 +1,8 @@
-mod latex;
-mod python;
+pub mod cli;
+pub mod latex;
+pub mod python;
 use crate::latex::{ProjectParameters, create_project};
 use crate::python::bridge::{call_python_extract, call_python_extract_w_dir};
-// use anyhow::Result;
 use clap::{Parser, Subcommand};
 use colored::*;
 use dialoguer::{Confirm, theme::ColorfulTheme};
@@ -15,13 +15,13 @@ use std::time::Duration;
 #[command(author = "Marcos López <marcoslm@ciencias.unam.mx>")]
 #[command(version = "1.0")]
 #[command(about = "PDF to LaTeX problem set generator")]
-struct Cli {
+pub struct Cli {
     #[command(subcommand)]
     command: Commands,
 }
 
 #[derive(Subcommand)]
-enum Commands {
+pub enum Commands {
     /// Build LaTeX project from PDF
     Build {
         /// Path to the input PDF
@@ -29,17 +29,19 @@ enum Commands {
     },
 }
 
-fn main() -> std::io::Result<()> {
-    let cli = Cli::parse();
-
-    match cli.command {
-        Commands::Build { input_file } => run_build(input_file)?,
-    }
-
-    Ok(())
+fn spinner(msg: &str) -> ProgressBar {
+    let pb = ProgressBar::new_spinner();
+    pb.set_style(
+        ProgressStyle::with_template("{spinner:.cyan} {msg}")
+            .unwrap()
+            .tick_strings(&["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]),
+    );
+    pb.set_message(msg.to_string());
+    pb.enable_steady_tick(Duration::from_millis(100));
+    pb
 }
 
-fn run_build(input_file: PathBuf) -> std::io::Result<()> {
+pub fn run_build(input_file: PathBuf) -> std::io::Result<()> {
     println!("📄 {} {}", "Input file:".bold(), input_file.display());
 
     let confirm = Confirm::with_theme(&ColorfulTheme::default())
@@ -148,14 +150,12 @@ fn run_build(input_file: PathBuf) -> std::io::Result<()> {
     Ok(())
 }
 
-fn spinner(msg: &str) -> ProgressBar {
-    let pb = ProgressBar::new_spinner();
-    pb.set_style(
-        ProgressStyle::with_template("{spinner:.cyan} {msg}")
-            .unwrap()
-            .tick_strings(&["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]),
-    );
-    pb.set_message(msg.to_string());
-    pb.enable_steady_tick(Duration::from_millis(100));
-    pb
+fn main() -> std::io::Result<()> {
+    let cli = Cli::parse();
+
+    match cli.command {
+        Commands::Build { input_file } => run_build(input_file)?,
+    }
+
+    Ok(())
 }

@@ -2,6 +2,15 @@
 name = "textract"
 version = "0.1.2"
 edition = "2024"
+categories = ["command-line-utilities"]
+keywords = ["latex", "pdf", "cli", "rust"]
+license = "MIT"
+readme = "README.md"
+repository = "htpps://github.com/MarcosLopezM/TeXtract"
+
+[[bin]]
+name = "textract"
+path = "src/main.rs"
 
 [dependencies]
 once_cell = "1.21.3"
