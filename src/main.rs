@@ -1,7 +1,7 @@
 mod latex;
 mod python;
 use crate::latex::{ProjectParameters, create_project};
-use crate::python::bridge::call_python_extract;
+use crate::python::bridge::{call_python_extract, call_python_extract_w_dir};
 // use anyhow::Result;
 use clap::{Parser, Subcommand};
 use colored::*;
@@ -48,15 +48,26 @@ fn run_build(input_file: PathBuf) -> std::io::Result<()> {
         .interact()
         .map_err(std::io::Error::other)?;
 
-    let output_folder = call_python_extract(input_file.to_str().unwrap())?;
+    // let output_folder = call_python_extract(input_file.to_str().unwrap())?;
+    let output_folder: String;
 
     let params: ProjectParameters = if confirm {
+        output_folder = call_python_extract(input_file.to_str().unwrap())?;
+
         ProjectParameters {
             base_dir: Path::new(&output_folder),
             ..ProjectParameters::default()
         }
     } else {
         println!("{}", "🛠 Enter custom project parameters:".yellow());
+
+        let custom_out: String = dialoguer::Input::new()
+            .with_prompt("📁 Output folder name")
+            .default("Output".into())
+            .interact_text()
+            .map_err(std::io::Error::other)?;
+
+        output_folder = call_python_extract_w_dir(input_file.to_str().unwrap(), &custom_out)?;
 
         let book_title_input: String = dialoguer::Input::new()
             .with_prompt("📘 Book title")
